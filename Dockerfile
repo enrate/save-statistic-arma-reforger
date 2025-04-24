@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Копируем файлы зависимостей
 COPY package*.json ./
+COPY .env /app/.env
 
 # Устанавливаем зависимости
 RUN npm install
