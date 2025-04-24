@@ -1,0 +1,24 @@
+{
+  "name": "save-statistic-arma-reforger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enrate/save-statistic-arma-reforger.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/enrate/save-statistic-arma-reforger/issues"
+  },
+  "homepage": "https://github.com/enrate/save-statistic-arma-reforger#readme"
+}
