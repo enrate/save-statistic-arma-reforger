@@ -28,6 +28,11 @@ const authMiddleware = (req, res, next) => {
 // POST endpoint с проверкой токена
 app.post('/data', authMiddleware, (req, res) => {
   console.log('Получены данные:', req.body);
+  switch(req.body.events.name) {
+    case "serveradmintools_player_joined":
+      console.log(req.body.events.data)
+      console.log('Зашел плеер с неймом: ', req.body.events.data)
+  }
   res.status(200).json({ message: 'Данные получены' });
 });
 
