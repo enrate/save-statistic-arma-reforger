@@ -29,8 +29,6 @@ const authMiddleware = (req, res, next) => {
 app.post('/data', authMiddleware, (req, res) => {
   console.log('Получены данные:', req.body);
   console.log(req.body.events)
-  console.log(JSON.stringify(req.body))
-  console.log(JSON.parse(req.body))
   const adminToolsAction = req.body.events[0]
   switch(adminToolsAction.name) {
     case "serveradmintools_player_joined":
