@@ -31,10 +31,12 @@ app.post('/data', authMiddleware, (req, res) => {
   console.log(req.body.events)
   console.log(JSON.stringify(req.body))
   console.log(JSON.parse(req.body))
-  switch(req.body.events.name) {
+  const adminToolsAction = req.body.events[0]
+  switch(adminToolsAction.name) {
     case "serveradmintools_player_joined":
-      console.log(req.body.events.data)
-      console.log('Зашел плеер с неймом: ', req.body.events.data)
+      console.log(adminToolsAction)
+      console.log('Зашел плеер с неймом: ', adminToolsAction.data.player)
+      console.log('IdentityId: ', adminToolsAction.data.identity)
   }
   res.status(200).json({ message: 'Данные получены' });
 });
