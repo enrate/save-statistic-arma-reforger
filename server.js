@@ -28,7 +28,9 @@ const authMiddleware = (req, res, next) => {
 // POST endpoint с проверкой токена
 app.post('/data', authMiddleware, (req, res) => {
   console.log('Получены данные:', req.body);
-  console.log(JSON.parse(req.body.events.data))
+  console.log(req.body.events)
+  console.log(JSON.stringify(req.body))
+  console.log(JSON.parse(req.body))
   switch(req.body.events.name) {
     case "serveradmintools_player_joined":
       console.log(req.body.events.data)
