@@ -2,6 +2,7 @@ require('dotenv/config');
 const express = require('express');
 const { Client, IntentsBitField } = require('discord.js');
 const app = express();
+const pool = require('./db');
 
 // Middleware для разбора JSON
 app.use(express.json());
@@ -63,15 +64,41 @@ app.post('/data', authMiddleware, async (req, res) => {
       // Определение канала по типу события
       let channelId;
       switch(actionName) {
-        case 'serveradmintools_player_joined':
+        case 'serveradmintools_player_joined': {
           channelId = CHANNEL_MAPPING.serveradmintools_player_joined;
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
-          break;
+          // Запись в БД
+    const connection = await pool.getConnection();
+    try {
+      await connection.query(
+        `INSERT INTO player_events 
+        (event_type, player_name, player_id, timestamp) 
+        VALUES ('join', ?, ?, NOW())`,
+        [eventData.player, eventData.identity]
+      );
+    } finally {
+      connection.release();
+    }
+    break;
+  }
 
-        case 'serveradmintools_player_killed':
+        case 'serveradmintools_player_killed': {
           channelId = CHANNEL_MAPPING.serveradmintools_player_killed;
-          await sendToDiscord(channelId, `🚪 Игрок ${eventData.instigator} убил ${eventData.friendly ? 'союзника' : '' } ${eventData.player}`);
-          break;
+          await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
+          // Запись в БД
+    const connection = await pool.getConnection();
+    try {
+      await connection.query(
+        `INSERT INTO kill_events 
+        (killer_name, victim_name, is_friendly, timestamp) 
+        VALUES (?, ?, ?, NOW())`,
+        [eventData.instigator, eventData.player, eventData.friendly]
+      );
+    } finally {
+      connection.release();
+    }
+    break;
+  }
 
         case 'admin_notification':
           channelId = CHANNEL_MAPPING.admin_notification;
