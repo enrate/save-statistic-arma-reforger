@@ -12,7 +12,7 @@ const API_TOKEN = 'dkfSkell35jwlslSL';
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CHANNEL_MAPPING = {
   "serveradmintools_player_joined": "1365101461788168202",
-  "serveradmintools_player_left": "DISCORD_CHANNEL_ID_FOR_LEAVES",
+  "serveradmintools_player_killed": "1365155098052792360",
   "admin_notification": "DISCORD_CHANNEL_ID_FOR_ADMIN"
 };
 
@@ -68,8 +68,9 @@ app.post('/data', authMiddleware, async (req, res) => {
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
           break;
 
-        case 'serveradmintools_player_left':
-          channelId = CHANNEL_MAPPING.serveradmintools_player_left;
+        case 'serveradmintools_player_killed':
+          channelId = CHANNEL_MAPPING.serveradmintools_player_killed;
+          console.log(eventData)
           await sendToDiscord(channelId, `🚪 Игрок вышел: ${eventData.player} (Причина: ${eventData.reason})`);
           break;
 
