@@ -67,20 +67,24 @@ app.post('/data', authMiddleware, async (req, res) => {
         case 'serveradmintools_player_joined': {
           channelId = CHANNEL_MAPPING.serveradmintools_player_joined;
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
+          
           // Запись в БД
-    const connection = await pool.getConnection();
-    try {
-      await connection.query(
-        `INSERT INTO player_events 
-        (event_type, player_name, player_id, timestamp) 
-        VALUES ('join', ?, ?, NOW())`,
-        [eventData.player, eventData.identity]
-      );
-    } finally {
-      connection.release();
-    }
-    break;
-  }
+          const connection = await pool.getConnection();
+          try {
+              await connection.query(
+                  `INSERT INTO player_connections 
+                  (player_id, player_name, timestamp_first_connection, timestamp_last_connection) 
+                  VALUES (?, ?, NOW(), NOW())
+                  ON DUPLICATE KEY UPDATE 
+                      timestamp_last_connection = NOW(),
+                      player_name = VALUES(player_name)`,
+                  [eventData.identity, eventData.player]
+              );
+          } finally {
+              connection.release();
+          }
+          break;
+      }
 
         case 'serveradmintools_player_killed': {
           channelId = CHANNEL_MAPPING.serveradmintools_player_killed;
