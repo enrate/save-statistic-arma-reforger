@@ -70,8 +70,7 @@ app.post('/data', authMiddleware, async (req, res) => {
 
         case 'serveradmintools_player_killed':
           channelId = CHANNEL_MAPPING.serveradmintools_player_killed;
-          console.log(eventData)
-          await sendToDiscord(channelId, `🚪 Игрок вышел: ${eventData.player} (Причина: ${eventData.reason})`);
+          await sendToDiscord(channelId, `🚪 Игрок ${eventData.instigator} убил ${eventData.friendly ? 'союзника' : '' } ${eventData.player}`);
           break;
 
         case 'admin_notification':
