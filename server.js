@@ -68,22 +68,46 @@ app.post('/data', authMiddleware, async (req, res) => {
       let channelId;
       switch(actionName) {
         case 'logger_player_connected': {
+          try{
           channelId = CHANNEL_MAPPING.logger_player_connected;
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
-          await processConnectedPlayer(eventData.player, eventData.identity);          
+          } catch (err) {
+            console.log(err)
+          }
+          try {
+            await processConnectedPlayer(eventData.player, eventData.identity);
+          } catch (err) {
+            console.log(err)
+          }
           break;
       }
       case 'logger_player_disconnected': {
-        channelId = CHANNEL_MAPPING.logger_player_connected;
-        await sendToDiscord(channelId, `🎮 Игрок отключился: ${eventData.player} (ID: ${eventData.identity})`);
-        await processDisconnectedPlayer(eventData.identity);
+        try{
+          channelId = CHANNEL_MAPPING.logger_player_connected;
+          await sendToDiscord(channelId, `🎮 Игрок отключился: ${eventData.player} (ID: ${eventData.identity})`);
+        } catch (err) {
+          console.log(err)
+        }
+        try{
+          await processDisconnectedPlayer(eventData.identity);
+        } catch (err) {
+          console.log(err)
+        }
         break;
     }
 
         case 'logger_player_killed': {
-          channelId = CHANNEL_MAPPING.logger_player_killed;
-          await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
-          await processKillPlayer(eventData.instigator, eventData.player, eventData.friendly);
+          try {
+            channelId = CHANNEL_MAPPING.logger_player_killed;
+            await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
+          } catch (err) {
+            console.log(err)
+          }
+          try {
+            await processKillPlayer(eventData.instigator, eventData.player, eventData.friendly);
+          } catch (err) {
+            console.log(err)
+          }
     break;
   }
 
