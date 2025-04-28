@@ -1,6 +1,6 @@
 const pool = require('./db');
 
-async function processKillPlayer(){
+async function processKillPlayer(instigator, player, friendly){
     const connection = await pool.getConnection();
     try {
       await connection.query(

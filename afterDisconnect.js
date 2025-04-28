@@ -8,7 +8,7 @@ async function processDisconnectedPlayer(identity) {
                 `UPDATE player_connections 
                 SET timestamp_disconnection = NOW() 
                 WHERE player_id = ?`,
-                [eventData.identity]
+                [identity]
             );
     
             // 2. Получаем временные метки
