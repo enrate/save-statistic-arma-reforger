@@ -105,7 +105,7 @@ app.post('/data', authMiddleware, async (req, res) => {
     }
 
         case 'logger_player_killed': {
-          channelId = CHANNEL_MAPPING.serveradmintools_player_killed;
+          channelId = CHANNEL_MAPPING.logger_player_killed;
           await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
           // Запись в БД
     const connection = await pool.getConnection();
