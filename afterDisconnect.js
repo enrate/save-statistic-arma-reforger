@@ -29,13 +29,10 @@ async function processDisconnectedPlayer(identity) {
     
             // 3. Обновляем статистику
             await connection.query(
-                `INSERT INTO players_stats 
-                    (player_id, playedTime) 
-                VALUES 
-                    (?, ?) 
-                ON DUPLICATE KEY UPDATE 
-                    playedTime = playedTime + VALUES(playedTime)`,
-                [identity, minutesPlayed]
+                `UPDATE players_stats 
+                SET playedTime = playedTime + ?
+                WHERE player_id = ?`,
+                [minutesPlayed, identity]
             );
     
         } finally {
