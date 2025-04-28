@@ -1,6 +1,6 @@
 const pool = require('./db');
 
-export async function processKillPlayer(){
+async function processKillPlayer(){
     const connection = await pool.getConnection();
     try {
       await connection.query(
@@ -13,3 +13,4 @@ export async function processKillPlayer(){
       connection.release();
     }
 }
+module.exports = { processKillPlayer };

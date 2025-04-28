@@ -1,6 +1,6 @@
 const pool = require('./db');
 
-export async function processDisconnectedPlayer() {
+async function processDisconnectedPlayer() {
     const connection = await pool.getConnection();
         try {
             // 1. Обновляем время отключения
@@ -42,3 +42,5 @@ export async function processDisconnectedPlayer() {
             connection.release();
         }
 }
+
+module.exports = { processDisconnectedPlayer };

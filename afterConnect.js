@@ -1,6 +1,6 @@
 const pool = require('./db');
 
-export async function processConnectedPlayer() {
+async function processConnectedPlayer() {
     const connection = await pool.getConnection();
           try {
               await connection.query(
@@ -16,3 +16,4 @@ export async function processConnectedPlayer() {
               connection.release();
           }
 }
+module.exports = { processConnectedPlayer };
