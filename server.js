@@ -70,20 +70,20 @@ app.post('/data', authMiddleware, async (req, res) => {
         case 'logger_player_connected': {
           channelId = CHANNEL_MAPPING.logger_player_connected;
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
-          await processConnectedPlayer();          
+          await processConnectedPlayer(eventData.player, eventData.identity);          
           break;
       }
       case 'logger_player_disconnected': {
         channelId = CHANNEL_MAPPING.logger_player_connected;
         await sendToDiscord(channelId, `🎮 Игрок отключился: ${eventData.player} (ID: ${eventData.identity})`);
-        await processDisconnectedPlayer();
+        await processDisconnectedPlayer(identity);
         break;
     }
 
         case 'logger_player_killed': {
           channelId = CHANNEL_MAPPING.logger_player_killed;
           await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
-          await processKillPlayer();
+          await processKillPlayer(eventData.instigator, eventData.player, eventData.friendly);
     break;
   }
 

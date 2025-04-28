@@ -1,6 +1,6 @@
 const pool = require('./db');
 
-async function processConnectedPlayer() {
+async function processConnectedPlayer(player, identity) {
     const connection = await pool.getConnection();
           try {
               await connection.query(

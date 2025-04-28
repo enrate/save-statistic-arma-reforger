@@ -1,6 +1,6 @@
 const pool = require('./db');
 
-async function processDisconnectedPlayer() {
+async function processDisconnectedPlayer(identity) {
     const connection = await pool.getConnection();
         try {
             // 1. Обновляем время отключения
