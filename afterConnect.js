@@ -8,7 +8,7 @@ async function processConnectedPlayer(player, identity) {
             const [checkCreatedResults] = await connection.query(
                 `SELECT connection_id
                 FROM players_info
-                WHERE player.id = ?`,
+                WHERE player_id = ?`,
                 [identity]
             );
             if (checkCreatedResults.length === 0) {
