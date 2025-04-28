@@ -10,7 +10,7 @@ async function processConnectedPlayer(player, identity) {
                   ON DUPLICATE KEY UPDATE 
                       timestamp_last_connection = NOW(),
                       player_name = VALUES(player_name)`,
-                  [eventData.identity, eventData.player]
+                  [identity, player]
               );
           } finally {
               connection.release();

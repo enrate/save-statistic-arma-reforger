@@ -19,7 +19,7 @@ async function processDisconnectedPlayer(identity) {
                     timestamp_disconnection
                 FROM player_connections 
                 WHERE player_id = ?`,
-                [eventData.identity]
+                [identity]
             );
     
             if (connectionRows.length === 0) return;
@@ -35,7 +35,7 @@ async function processDisconnectedPlayer(identity) {
                     (?, ?) 
                 ON DUPLICATE KEY UPDATE 
                     playedTime = playedTime + VALUES(playedTime)`,
-                [eventData.identity, minutesPlayed]
+                [identity, minutesPlayed]
             );
     
         } finally {

@@ -7,7 +7,7 @@ async function processKillPlayer(){
         `INSERT INTO kill_events 
         (killer_name, victim_name, is_friendly, timestamp) 
         VALUES (?, ?, ?, NOW())`,
-        [eventData.instigator, eventData.player, eventData.friendly]
+        [instigator, player, friendly]
       );
     } finally {
       connection.release();
