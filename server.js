@@ -12,8 +12,8 @@ const PORT = 3000;
 const API_TOKEN = 'dkfSkell35jwlslSL';
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CHANNEL_MAPPING = {
-  "serveradmintools_player_joined": "1365101461788168202",
-  "serveradmintools_player_killed": "1365155098052792360",
+  "logger_player_connected": "1365101461788168202",
+  "logger_player_killed": "1365155098052792360",
   "admin_notification": "DISCORD_CHANNEL_ID_FOR_ADMIN"
 };
 
@@ -64,8 +64,8 @@ app.post('/data', authMiddleware, async (req, res) => {
       // Определение канала по типу события
       let channelId;
       switch(actionName) {
-        case 'serveradmintools_player_joined': {
-          channelId = CHANNEL_MAPPING.serveradmintools_player_joined;
+        case 'logger_player_connected': {
+          channelId = CHANNEL_MAPPING.logger_player_connected;
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
           
           // Запись в БД
@@ -85,8 +85,26 @@ app.post('/data', authMiddleware, async (req, res) => {
           }
           break;
       }
+      case 'logger_player_disconnected': {
+        channelId = CHANNEL_MAPPING.logger_player_connected;
+        await sendToDiscord(channelId, `🎮 Игрок отключился: ${eventData.player} (ID: ${eventData.identity})`);
+        
+        // Запись в БД
+        const connection = await pool.getConnection();
+        try {
+          await connection.query(
+            `UPDATE player_connections 
+            SET timestamp_disconnection = NOW()
+            WHERE player_id = ?`,
+            [eventData.identity]
+        );
+        } finally {
+            connection.release();
+        }
+        break;
+    }
 
-        case 'serveradmintools_player_killed': {
+        case 'logger_player_killed': {
           channelId = CHANNEL_MAPPING.serveradmintools_player_killed;
           await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
           // Запись в БД
