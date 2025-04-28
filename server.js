@@ -3,6 +3,9 @@ const express = require('express');
 const { Client, IntentsBitField } = require('discord.js');
 const app = express();
 const pool = require('./db');
+const { processDisconnectedPlayer } = require('./afterDisconnect');
+const { processConnectedPlayer } = require('./afterConnect');
+const { processKillPlayer } = require('./afterKill');
 
 // Middleware для разбора JSON
 app.use(express.json());
@@ -67,58 +70,20 @@ app.post('/data', authMiddleware, async (req, res) => {
         case 'logger_player_connected': {
           channelId = CHANNEL_MAPPING.logger_player_connected;
           await sendToDiscord(channelId, `🎮 Игрок присоединился: ${eventData.player} (ID: ${eventData.identity})`);
-          
-          // Запись в БД
-          const connection = await pool.getConnection();
-          try {
-              await connection.query(
-                  `INSERT INTO player_connections 
-                  (player_id, player_name, timestamp_first_connection, timestamp_last_connection) 
-                  VALUES (?, ?, NOW(), NOW())
-                  ON DUPLICATE KEY UPDATE 
-                      timestamp_last_connection = NOW(),
-                      player_name = VALUES(player_name)`,
-                  [eventData.identity, eventData.player]
-              );
-          } finally {
-              connection.release();
-          }
+          await processConnectedPlayer();          
           break;
       }
       case 'logger_player_disconnected': {
         channelId = CHANNEL_MAPPING.logger_player_connected;
         await sendToDiscord(channelId, `🎮 Игрок отключился: ${eventData.player} (ID: ${eventData.identity})`);
-        
-        // Запись в БД
-        const connection = await pool.getConnection();
-        try {
-          await connection.query(
-            `UPDATE player_connections 
-            SET timestamp_disconnection = NOW()
-            WHERE player_id = ?`,
-            [eventData.identity]
-        );
-        } finally {
-            connection.release();
-        }
+        await processDisconnectedPlayer();
         break;
     }
 
         case 'logger_player_killed': {
           channelId = CHANNEL_MAPPING.logger_player_killed;
           await sendToDiscord(channelId, `🔫 Игрок ${eventData.instigator} убил${eventData.friendly ? ' союзника' : '' } ${eventData.player}`);
-          // Запись в БД
-    const connection = await pool.getConnection();
-    try {
-      await connection.query(
-        `INSERT INTO kill_events 
-        (killer_name, victim_name, is_friendly, timestamp) 
-        VALUES (?, ?, ?, NOW())`,
-        [eventData.instigator, eventData.player, eventData.friendly]
-      );
-    } finally {
-      connection.release();
-    }
+          await processKillPlayer();
     break;
   }
 

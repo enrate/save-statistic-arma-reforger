@@ -1,0 +1,18 @@
+const pool = require('./db');
+
+export async function processConnectedPlayer() {
+    const connection = await pool.getConnection();
+          try {
+              await connection.query(
+                  `INSERT INTO player_connections 
+                  (player_id, player_name, timestamp_first_connection, timestamp_last_connection) 
+                  VALUES (?, ?, NOW(), NOW())
+                  ON DUPLICATE KEY UPDATE 
+                      timestamp_last_connection = NOW(),
+                      player_name = VALUES(player_name)`,
+                  [eventData.identity, eventData.player]
+              );
+          } finally {
+              connection.release();
+          }
+}
