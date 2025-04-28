@@ -21,19 +21,19 @@ async function processConnectedPlayer(player, identity) {
                 [connectionId, identity, player]
             );
 
-            // const [statsResult] = await connection.query(
-            //     `INSERT INTO players_stats (player_id)
-            //     VALUES (?)
-            //     ON DUPLICATE KEY UPDATE player_id = VALUES(player_id)`,
-            //     [identity]
-            // );
+            const [statsResult] = await connection.query(
+                `INSERT INTO players_stats (player_id)
+                VALUES (?)
+                ON DUPLICATE KEY UPDATE player_id = VALUES(player_id)`,
+                [identity]
+            );
 
-            // await connection.query(
-            //     `UPDATE players_info
-            //     SET stats_id = ?
-            //     WHERE id = ?`,
-            //     [statsResult.insertId, infoResult.insertId]
-            // );
+            await connection.query(
+                `UPDATE players_info
+                SET stats_id = ?
+                WHERE id = ?`,
+                [statsResult.insertId, infoResult.insertId]
+            );
         
             await connection.commit();
         } catch (error) {
