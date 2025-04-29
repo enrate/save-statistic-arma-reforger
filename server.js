@@ -89,7 +89,7 @@ app.post('/data', authMiddleware, async (req, res) => {
           console.log(err)
         }
         try{
-          await processDisconnectedPlayer(eventData.identity);
+          await processDisconnectedPlayer(eventData.identity, eventData.player);
         } catch (err) {
           console.log(err)
         }
