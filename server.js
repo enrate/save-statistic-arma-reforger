@@ -17,6 +17,7 @@ const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CHANNEL_MAPPING = {
   "logger_player_connected": "1365101461788168202",
   "logger_player_killed": "1365155098052792360",
+  "logger_player_message": "1367534892031672340",
   "admin_notification": "DISCORD_CHANNEL_ID_FOR_ADMIN"
 };
 
@@ -63,7 +64,6 @@ app.post('/data', authMiddleware, async (req, res) => {
     for (const event of events) {
       const actionName = event.name;
       const eventData = event.data;
-      console.log(eventData)
 
       // Определение канала по типу события
       let channelId;
@@ -96,7 +96,6 @@ app.post('/data', authMiddleware, async (req, res) => {
         }
         break;
     }
-
         case 'logger_player_killed': {
           try {
             channelId = CHANNEL_MAPPING.logger_player_killed;
@@ -110,6 +109,14 @@ app.post('/data', authMiddleware, async (req, res) => {
             console.log(err)
           }
     break;
+  }
+  case 'logger_player_message': {
+    try{
+      channelId = CHANNEL_MAPPING.logger_player_message;
+      await sendToDiscord(channelId, `(${eventData.identity}) ${eventData.player}: ${eventData.msg} | ${eventData.channelId == 0 ? "Глобал" : eventData.channelId == 1 ? "Фракция" : "Отряд"}`);
+    } catch (err) {
+      console.log(err)
+    }
   }
 
         case 'admin_notification':
