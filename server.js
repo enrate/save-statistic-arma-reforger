@@ -76,7 +76,7 @@ app.post('/data', authMiddleware, async (req, res) => {
             console.log(err)
           }
           try {
-            await processConnectedPlayer(eventData.player, eventData.identity);
+            await processConnectedPlayer(eventData.player, eventData.identity, eventData.platformId, eventData.platform);
           } catch (err) {
             console.log(err)
           }
