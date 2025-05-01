@@ -50,12 +50,18 @@ async function processConnectedPlayer(player, identity) {
                 
             } else {
                 await connection.query(
-                    `UPDATE player_connections pc
-                    JOIN players_info pi ON pc.id = pi.connection_id
-                    SET pc.timestamp_last_connection = NOW()
-                    WHERE pi.player_id = ?`,
-                    [identity]
+                    `INSERT INTO temp_player_events 
+                    (player_id, player_name, event_type)
+                    VALUES (?, ?, 'connect')`,
+                    [identity, player]
                 );
+                // await connection.query(
+                //     `UPDATE player_connections pc
+                //     JOIN players_info pi ON pc.id = pi.connection_id
+                //     SET pc.timestamp_last_connection = NOW()
+                //     WHERE pi.player_id = ?`,
+                //     [identity]
+                // );
             }
                 await connection.commit();
             } catch (error) {
