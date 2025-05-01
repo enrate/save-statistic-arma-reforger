@@ -63,6 +63,7 @@ app.post('/data', authMiddleware, async (req, res) => {
     for (const event of events) {
       const actionName = event.name;
       const eventData = event.data;
+      console.log(eventData)
 
       // Определение канала по типу события
       let channelId;
