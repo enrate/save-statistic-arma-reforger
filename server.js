@@ -117,8 +117,8 @@ app.post('/data', authMiddleware, async (req, res) => {
     } catch (err) {
       console.log(err)
     }
+    break;
   }
-
         case 'admin_notification':
           channelId = CHANNEL_MAPPING.admin_notification;
           await sendToDiscord(channelId, `⚠️ Админ-уведомление: ${eventData.message}`);
